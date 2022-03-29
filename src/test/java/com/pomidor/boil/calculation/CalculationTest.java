@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class CalculationTest {
     @Test
@@ -33,5 +34,27 @@ public class CalculationTest {
                         new Happening(9, 19.0, 19.0, 0.0, Arrays.asList(8), new ArrayList<>()))
         );
         Assertions.assertEquals(CalcuteCPM.calculate(activityTestList), happeningsExpected);
+    }
+
+    @Test
+    void criticalPath() {
+        List<Activity> activityTestList = new ArrayList<>(
+            Arrays.asList(new Activity("A",3.0,1, 2),
+                          new Activity("B",4.0,2, 3),
+                          new Activity("C",6.0,2, 4),
+                          new Activity("D",7.0,3, 5),
+                          new Activity("E",1.0,5, 7),
+                          new Activity("F",2.0,4, 7),
+                          new Activity("G",3.0,4, 6),
+                          new Activity("H",4.0,6, 7),
+                          new Activity("I",1.0,7, 8),
+                          new Activity("J",2.0,8, 9)));
+
+        List<Happening> happenings = CalcuteCPM.calculate(activityTestList);
+        Map<Integer, Integer> criticalPath = CalcuteCPM.getCriticalPath(happenings);
+        System.out.println(criticalPath);
+        double criticalPathLength = CalcuteCPM.getCriticalPathLength(criticalPath,
+                                                                     activityTestList);
+        System.out.println(criticalPathLength);
     }
 }
