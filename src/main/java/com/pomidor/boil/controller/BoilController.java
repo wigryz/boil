@@ -6,6 +6,8 @@ import com.pomidor.boil.calculation.cpm.Happening;
 import com.pomidor.boil.controller.cpm.ActivityDtoMapper;
 import com.pomidor.boil.controller.cpm.dtos.CPMDto;
 import com.pomidor.boil.controller.cpm.dtos.HappeningDto;
+import com.pomidor.boil.controller.dtoFront.CPM;
+import com.pomidor.boil.controller.dtoFront.CPMMapper;
 import com.pomidor.boil.controller.transport.dtos.TransportDto;
 import com.pomidor.boil.controller.transport.dtos.TransportInputDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +28,11 @@ public class BoilController {
     @Autowired
     private ActivityDtoMapper activityDtoMapper;
     @Autowired
+    private CPMMapper cpmMapper;
+    @Autowired
     private Validator validator;
 
-    @PostMapping("/cpm")
+    @PostMapping("/old-cpm")
     public ResponseEntity<CPMDto> calculate(@RequestBody List<Activity> activities) {
 
         validator.validate(activities);
@@ -39,7 +43,8 @@ public class BoilController {
                                                      .map(h -> new HappeningDto(h.getId(),
                                                                                 h.getMinHappenTime(),
                                                                                 h.getMaxHappenTime(),
-                                                                                h.getReserveTime())).toList();
+                                                                                h.getReserveTime(),
+                                                             h.getNextHappenings())).toList();
 
         Double criticalPathLength = CalcuteCPM.getCriticalPathLength(criticalPath, activities);
         CPMDto dto = new CPMDto(happeningDtos,
@@ -49,8 +54,35 @@ public class BoilController {
         return ResponseEntity.ok(dto);
     }
 
+    @PostMapping("/cpm")
+    public ResponseEntity<CPM> cpm(@RequestBody List<Activity> activities) {
+
+        validator.validate(activities);
+        List<Happening> happenings = CalcuteCPM.calculate(activities);
+        Map<Integer, Integer> criticalPath = CalcuteCPM.getCriticalPath(happenings);
+
+        List<HappeningDto> happeningDtos = happenings.stream()
+                .map(h -> new HappeningDto(h.getId(),
+                        h.getMinHappenTime(),
+                        h.getMaxHappenTime(),
+                        h.getReserveTime(),
+                        h.getNextHappenings())).toList();
+
+        Double criticalPathLength = CalcuteCPM.getCriticalPathLength(criticalPath, activities);
+        CPMDto dto = new CPMDto(happeningDtos,
+                activityDtoMapper.map(activities),
+                criticalPath,
+                criticalPathLength);
+        return ResponseEntity.ok(cpmMapper.mapToCPM(dto));
+    }
+
     @GetMapping("/test")
-    public ResponseEntity<CPMDto> test() {
+    public ResponseEntity<CPM> test() {
+        CPM cpm = cpmMapper.mapToCPM(getTestData());
+        return ResponseEntity.ok(cpm);
+    }
+
+    private CPMDto getTestData() {
         List<Activity> activities = new ArrayList<>(
                 Arrays.asList(new Activity("A",3.0,1, 2),
                         new Activity("B",4.0,2, 3),
@@ -70,14 +102,14 @@ public class BoilController {
                 .map(h -> new HappeningDto(h.getId(),
                         h.getMinHappenTime(),
                         h.getMaxHappenTime(),
-                        h.getReserveTime())).toList();
+                        h.getReserveTime(),
+                        h.getNextHappenings())).toList();
 
         Double criticalPathLength = CalcuteCPM.getCriticalPathLength(criticalPath, activities);
-        CPMDto dto = new CPMDto(happeningDtos,
+        return new CPMDto(happeningDtos,
                 activityDtoMapper.map(activities),
                 criticalPath,
                 criticalPathLength);
-        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/transport")
