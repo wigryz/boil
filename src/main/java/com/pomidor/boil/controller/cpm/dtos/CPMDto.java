@@ -1,13 +1,11 @@
-package com.pomidor.boil.controller.cpm.dtos.dtos;
-
-import com.pomidor.boil.calculation.cpm.Activity;
+package com.pomidor.boil.controller.cpm.dtos;
 
 import java.util.List;
 import java.util.Map;
 
 public record CPMDto (
     List<HappeningDto> happenings,
-    List<Activity> activities,
+    List<ActivityDto> activities,
     Map<Integer, Integer> criticalPath,
     Double criticalPathLength
 ) {

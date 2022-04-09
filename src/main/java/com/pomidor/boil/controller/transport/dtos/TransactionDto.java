@@ -1,4 +1,4 @@
-package com.pomidor.boil.controller.transport;
+package com.pomidor.boil.controller.transport.dtos;
 
 public record TransactionDto(
     Long supplierId,
