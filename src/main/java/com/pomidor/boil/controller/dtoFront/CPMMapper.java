@@ -30,7 +30,7 @@ public class CPMMapper {
                 "id: " + happeningDto.id() + "<br>" +
                         "minHappenTime: " + happeningDto.minHappenTime() + "<br>" +
                         "maxHappenTime: " + happeningDto.maxHappenTime() + "<br>" +
-                        "minHappenTime: " + happeningDto.reserveTime()
+                        "reserveTime: " + happeningDto.reserveTime()
         )).toList();
 
         List<String> criticalPath = new LinkedList<>();
