@@ -6,6 +6,7 @@ import com.pomidor.boil.calculation.cpm.Happening;
 import com.pomidor.boil.controller.cpm.dtos.dtos.CPMDto;
 import com.pomidor.boil.controller.cpm.dtos.dtos.HappeningDto;
 import com.pomidor.boil.controller.transport.TransportDto;
+import com.pomidor.boil.controller.transport.TransportInputDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -43,8 +44,7 @@ public class BoilController {
     }
 
     @PostMapping("/transport")
-    public ResponseEntity<TransportDto> transport() {
-
+    public ResponseEntity<TransportDto> transport(@RequestBody TransportInputDto transportInputDto) {
 
 
         TransportDto transportDto = new TransportDto(List.of());
