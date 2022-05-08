@@ -1,4 +1,4 @@
-package com.pomidor.boil.controller.dtoFront;
+package com.pomidor.boil.controller.cpm.dtoFront;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.pomidor.boil.controller.dtoFront;
+package com.pomidor.boil.controller.cpm.dtoFront;
 
 public record Tippy (
         String id,
