@@ -1,5 +1,8 @@
 package com.pomidor.boil.calculation;
 
+import com.pomidor.boil.calculation.cpm.Activity;
+import com.pomidor.boil.calculation.cpm.CalcuteCPM;
+import com.pomidor.boil.calculation.cpm.Happening;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package com.pomidor.boil.controller.dtos;
+package com.pomidor.boil.controller.cpm.dtos.dtos;
 
 public record HappeningDto(
     Integer id,

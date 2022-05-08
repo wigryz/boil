@@ -1,4 +1,4 @@
-package com.pomidor.boil.calculation;
+package com.pomidor.boil.calculation.cpm;
 
 import java.util.ArrayList;
 import java.util.List;

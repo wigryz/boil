@@ -1,10 +1,11 @@
 package com.pomidor.boil.controller;
 
-import com.pomidor.boil.calculation.Activity;
-import com.pomidor.boil.calculation.CalcuteCPM;
-import com.pomidor.boil.calculation.Happening;
-import com.pomidor.boil.controller.dtos.CPMDto;
-import com.pomidor.boil.controller.dtos.HappeningDto;
+import com.pomidor.boil.calculation.cpm.Activity;
+import com.pomidor.boil.calculation.cpm.CalcuteCPM;
+import com.pomidor.boil.calculation.cpm.Happening;
+import com.pomidor.boil.controller.cpm.dtos.dtos.CPMDto;
+import com.pomidor.boil.controller.cpm.dtos.dtos.HappeningDto;
+import com.pomidor.boil.controller.transport.TransportDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -39,5 +40,14 @@ public class BoilController {
                                 criticalPath,
                                 criticalPathLength);
         return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/transport")
+    public ResponseEntity<TransportDto> transport() {
+
+
+
+        TransportDto transportDto = new TransportDto(List.of());
+        return ResponseEntity.ok(transportDto);
     }
 }

@@ -1,6 +1,6 @@
-package com.pomidor.boil.controller.dtos;
+package com.pomidor.boil.controller.cpm.dtos.dtos;
 
-import com.pomidor.boil.calculation.Activity;
+import com.pomidor.boil.calculation.cpm.Activity;
 
 import java.util.List;
 import java.util.Map;

@@ -1,7 +1,7 @@
-package com.pomidor.boil.calculation;
+package com.pomidor.boil.calculation.cpm;
 
-import com.pomidor.boil.calculation.exceptions.ManyEndingPointsException;
-import com.pomidor.boil.calculation.exceptions.ManyStartingPointsException;
+import com.pomidor.boil.calculation.cpm.exceptions.ManyEndingPointsException;
+import com.pomidor.boil.calculation.cpm.exceptions.ManyStartingPointsException;
 
 import java.util.*;
 
