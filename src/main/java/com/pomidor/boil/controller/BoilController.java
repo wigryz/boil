@@ -8,6 +8,10 @@ import com.pomidor.boil.cpm.dtos.CPMDto;
 import com.pomidor.boil.cpm.dtos.HappeningDto;
 import com.pomidor.boil.cpm.dtoFront.CPM;
 import com.pomidor.boil.cpm.dtoFront.CPMMapper;
+import com.pomidor.boil.transport.dtos.RecipientDto;
+import com.pomidor.boil.transport.dtos.SupplierDto;
+import com.pomidor.boil.transport.dtos.TransactionDto;
+import com.pomidor.boil.transport.dtos.TransportCostDto;
 import com.pomidor.boil.transport.dtos.TransportDto;
 import com.pomidor.boil.transport.dtos.TransportInputDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +34,8 @@ public class BoilController {
     @Autowired
     private Validator validator;
 
-    @PostMapping("/old-cpm")
-    public ResponseEntity<CPMDto> calculate(@RequestBody List<Activity> activities) {
+    @PostMapping("/cpm")
+    public ResponseEntity<CPM> cpm(@RequestBody List<Activity> activities) {
 
         validator.validate(activities);
         List<Happening> happenings = CalcuteCPM.calculate(activities);
@@ -44,76 +46,51 @@ public class BoilController {
                                                                                 h.getMinHappenTime(),
                                                                                 h.getMaxHappenTime(),
                                                                                 h.getReserveTime(),
-                                                             h.getNextHappenings())).toList();
+                                                                                h.getNextHappenings()))
+                                                     .toList();
 
         Double criticalPathLength = CalcuteCPM.getCriticalPathLength(criticalPath, activities);
         CPMDto dto = new CPMDto(happeningDtos,
                                 activityDtoMapper.map(activities),
                                 criticalPath,
                                 criticalPathLength);
-        return ResponseEntity.ok(dto);
-    }
-
-    @PostMapping("/cpm")
-    public ResponseEntity<CPM> cpm(@RequestBody List<Activity> activities) {
-
-        validator.validate(activities);
-        List<Happening> happenings = CalcuteCPM.calculate(activities);
-        Map<Integer, Integer> criticalPath = CalcuteCPM.getCriticalPath(happenings);
-
-        List<HappeningDto> happeningDtos = happenings.stream()
-                .map(h -> new HappeningDto(h.getId(),
-                        h.getMinHappenTime(),
-                        h.getMaxHappenTime(),
-                        h.getReserveTime(),
-                        h.getNextHappenings())).toList();
-
-        Double criticalPathLength = CalcuteCPM.getCriticalPathLength(criticalPath, activities);
-        CPMDto dto = new CPMDto(happeningDtos,
-                activityDtoMapper.map(activities),
-                criticalPath,
-                criticalPathLength);
         return ResponseEntity.ok(cpmMapper.mapToCPM(dto));
     }
 
     @GetMapping("/test")
-    public ResponseEntity<CPM> test() {
-        CPM cpm = cpmMapper.mapToCPM(getTestData());
-        return ResponseEntity.ok(cpm);
+    public ResponseEntity<TransportDto> test() {
+        return ResponseEntity.ok(outputTestData());
     }
 
-    private CPMDto getTestData() {
-        List<Activity> activities = new ArrayList<>(
-                Arrays.asList(new Activity("A",3.0,1, 2),
-                        new Activity("B",4.0,2, 3),
-                        new Activity("C",6.0,2, 4),
-                        new Activity("D",7.0,3, 5),
-                        new Activity("E",1.0,5, 7),
-                        new Activity("F",2.0,4, 7),
-                        new Activity("G",3.0,4, 6),
-                        new Activity("H",4.0,6, 7),
-                        new Activity("I",1.0,7, 8),
-                        new Activity("J",2.0,8, 9)));
 
-        List<Happening> happenings = CalcuteCPM.calculate(activities);
-        Map<Integer, Integer> criticalPath = CalcuteCPM.getCriticalPath(happenings);
+    private TransportDto outputTestData() {
+        List<TransactionDto> transactions = List.of(
+            new TransactionDto(null, null, null, null, null));
 
-        List<HappeningDto> happeningDtos = happenings.stream()
-                .map(h -> new HappeningDto(h.getId(),
-                        h.getMinHappenTime(),
-                        h.getMaxHappenTime(),
-                        h.getReserveTime(),
-                        h.getNextHappenings())).toList();
+        return new TransportDto(transactions);
+    }
+    private TransportInputDto inputTestData() {
+        SupplierDto s1 = new SupplierDto(1L, 20.0, 10.0);
+        SupplierDto s2 = new SupplierDto(2L, 30.0, 12.0);
 
-        Double criticalPathLength = CalcuteCPM.getCriticalPathLength(criticalPath, activities);
-        return new CPMDto(happeningDtos,
-                activityDtoMapper.map(activities),
-                criticalPath,
-                criticalPathLength);
+        RecipientDto r1 = new RecipientDto(1L, 10.0, 30.0);
+        RecipientDto r2 = new RecipientDto(2L, 28.0, 25.0);
+        RecipientDto r3 = new RecipientDto(3L, 27.0, 30.0);
+
+        List<TransportCostDto> transportCosts = List.of(new TransportCostDto(1L, 1L, 8.0),
+                                                        new TransportCostDto(1L, 2L, 14.0),
+                                                        new TransportCostDto(1L, 3L, 17.0),
+                                                        new TransportCostDto(2L, 1L, 12.0),
+                                                        new TransportCostDto(2L, 2L, 9.0),
+                                                        new TransportCostDto(2L, 3L, 19.0));
+        return new TransportInputDto(List.of(s1, s2),
+                                     List.of(r1, r2, r3),
+                                     transportCosts);
     }
 
     @PostMapping("/transport")
-    public ResponseEntity<TransportDto> transport(@RequestBody TransportInputDto transportInputDto) {
+    public ResponseEntity<TransportDto> transport(
+        @RequestBody TransportInputDto transportInputDto) {
 
 
         TransportDto transportDto = new TransportDto(List.of());
