@@ -1,15 +1,15 @@
 package com.pomidor.boil.controller;
 
-import com.pomidor.boil.calculation.cpm.Activity;
-import com.pomidor.boil.calculation.cpm.CalcuteCPM;
-import com.pomidor.boil.calculation.cpm.Happening;
-import com.pomidor.boil.controller.cpm.ActivityDtoMapper;
-import com.pomidor.boil.controller.cpm.dtos.CPMDto;
-import com.pomidor.boil.controller.cpm.dtos.HappeningDto;
-import com.pomidor.boil.controller.cpm.dtoFront.CPM;
-import com.pomidor.boil.controller.cpm.dtoFront.CPMMapper;
-import com.pomidor.boil.controller.transport.dtos.TransportDto;
-import com.pomidor.boil.controller.transport.dtos.TransportInputDto;
+import com.pomidor.boil.cpm.calculation.Activity;
+import com.pomidor.boil.cpm.calculation.CalcuteCPM;
+import com.pomidor.boil.cpm.calculation.Happening;
+import com.pomidor.boil.cpm.ActivityDtoMapper;
+import com.pomidor.boil.cpm.dtos.CPMDto;
+import com.pomidor.boil.cpm.dtos.HappeningDto;
+import com.pomidor.boil.cpm.dtoFront.CPM;
+import com.pomidor.boil.cpm.dtoFront.CPMMapper;
+import com.pomidor.boil.transport.dtos.TransportDto;
+import com.pomidor.boil.transport.dtos.TransportInputDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

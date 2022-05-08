@@ -1,11 +1,11 @@
 package com.pomidor.boil.controller;
 
-import com.pomidor.boil.calculation.cpm.Activity;
-import com.pomidor.boil.controller.cpm.exceptions.DurationLessThanZeroException;
-import com.pomidor.boil.controller.cpm.exceptions.DurationNullException;
-import com.pomidor.boil.controller.cpm.exceptions.IdNullException;
-import com.pomidor.boil.controller.cpm.exceptions.NameNotUniqueException;
-import com.pomidor.boil.controller.cpm.exceptions.NameNullException;
+import com.pomidor.boil.cpm.calculation.Activity;
+import com.pomidor.boil.cpm.exceptions.DurationLessThanZeroException;
+import com.pomidor.boil.cpm.exceptions.DurationNullException;
+import com.pomidor.boil.cpm.exceptions.IdNullException;
+import com.pomidor.boil.cpm.exceptions.NameNotUniqueException;
+import com.pomidor.boil.cpm.exceptions.NameNullException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
