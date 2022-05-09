@@ -53,9 +53,9 @@ public class BoilController {
         return ResponseEntity.ok(cpmMapper.mapToCPM(dto));
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<TransportDto> test() {
-        return ResponseEntity.ok(outputTestData());
+    @GetMapping("/input")
+    public ResponseEntity<TransportInputDto> test() {
+        return ResponseEntity.ok(inputTestData());
     }
 
 
