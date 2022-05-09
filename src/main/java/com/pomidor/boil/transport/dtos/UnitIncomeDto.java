@@ -1,8 +1,8 @@
 package com.pomidor.boil.transport.dtos;
 
-public record TransactionDto(
+public record UnitIncomeDto(
     Long supplierId,
     Long recipientId,
-    Double amount
+    Double unitIncome
 ) {
 }
