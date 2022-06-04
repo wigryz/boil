@@ -1,0 +1,189 @@
+<!DOCTYPE>
+
+<html>
+
+<head>
+	<title>siema</title>
+
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+	<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+
+	<!-- for testing with local version of cytoscape.js -->
+	<!--<script src="../cytoscape.js/build/cytoscape.js"></script>-->
+
+	<script src="https://unpkg.com/@popperjs/core@2"></script>
+	<script src="cytoscape-popper.js"></script>
+
+	<script src="https://unpkg.com/tippy.js@6"></script>
+
+	<style>
+		body {
+			font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
+			font-size: 14px
+		}
+
+		#cy {
+			position: absolute;
+			left: 20%;
+			top: 30px;
+			bottom: 0;
+			right: 0;
+			z-index: 1;
+			display: none;
+		}
+
+		h1 {
+			opacity: 0.5;
+			font-size: 1em;
+			font-weight: bold;
+		}
+
+
+		.tippy-popper {
+			transition: none !important;
+		}
+	</style>
+
+	
+</head>
+
+<body>
+
+
+	<div id="hideWhenCalculation">
+		<button id="demo">Oblicz</button><br>
+		<input type="number" min="1" step="1" name="suppliers" id="suppliers" placeholder="suppliers" class="hiddeW">
+		<input type="number" min="1" step="1" name="recipients" id="recipients" placeholder="recipients" class="hiddeW">
+		<button id="add1" class="hiddeW">Ustaw</button><br>
+	</div>
+	<div id="ass" style="display: none">
+	Suppliers:<br>
+	<form id="inputy"></form>
+		
+	Recipients:<br>
+	<form id="inputy2"></form>
+
+	Transport costs:<br>
+	<input type="text" value="supplierId" disabled><input type="text" value="recipientId" disabled><input type="text" value="cost" disabled>
+	<form id="inputy3"></form>
+	</div>
+	<p id="wyniki"></p><br>
+	<p id="wyniki2"></p>
+	<br>
+
+	<div id="cy"></div>
+	<script>
+
+		function displaySupplierInputs(i){
+			$('#inputy').append(i + '<br><input type="text" placeholder="supply" name="suppliers_supply' + i + '" id="suppliers_supply' + i + '"><input type="number" placeholder="unit price" name="suppliers_unit_price' + i + '" id="suppliers_unit_price' + i + '"><br>');
+		}
+
+		function displayRecipientInputs(i){
+			$('#inputy2').append(i + '<br><input type="text" placeholder="supply" name="recipient_supply' + i + '" id="recipient_supply' + i + '"><input type="number" placeholder="unit price" name="recipient_unit_price' + i + '" id="recipient_unit_price' + i + '"><br>');
+		}
+
+		function displayCostInputs(i, supplierId, recipientId){
+			$('#inputy3').append(i + '<br><input type="text" disabled value="' + supplierId + '" name="supplierId' + i + '" id="supplierId' + i + '"><input type="number" disabled value="' + recipientId + '" name="recipientId' + i + '" id="recipientId' + i + '"><input type="text" placeholder="cost" name="cost' + i + '" id="cost' + i + '"><br>');
+		}
+
+
+		document.getElementById("add1").addEventListener("click", displayInputs);
+			function displayInputs(){
+				var numberOfSuppliers = $("#suppliers").val();
+				$("#ass").css("display", "block");
+				$(".hiddeW").css("display", "none");
+
+				for (var i = 0 ; i < numberOfSuppliers; i++) {
+					displaySupplierInputs(i);
+				}
+
+				var numberOfRecipients = $("#recipients").val();
+
+				for (var i = 0 ; i < numberOfRecipients; i++) {
+					displayRecipientInputs(i);
+				}
+
+
+				var id = 0;
+				for (var i = 0 ; i < numberOfSuppliers ; i++) {
+					for (var j = 0 ; j < numberOfRecipients ; j++) {
+						displayCostInputs(id , i, j);
+						id++;
+					}
+				}
+			}
+
+			function getValues(){
+				var jsonValue = "{";
+				jsonValue += "\"suppliers\":[";
+				var numberOfSuppliers = $("#suppliers").val()
+				for (var i = 0 ; i < numberOfSuppliers ; i++) {
+					jsonValue += "{" + "\"id\":\"" + i + "\"," + getEntry("supply", "suppliers_supply" + i) + ',' + getEntry("unitPrice", "suppliers_unit_price" + i) + "}";
+					if (i != numberOfSuppliers - 1)
+						jsonValue += ",";
+				}
+				jsonValue += "],";
+
+
+				jsonValue += "\"recipients\":[";
+				var numberOfRecipients = $("#recipients").val()
+				for (var i = 0 ; i < numberOfRecipients ; i++) {
+					jsonValue += "{" + "\"id\":\"" + i + "\"," + getEntry("supply", "recipient_supply" + i) + ',' + getEntry("unitPrice", "recipient_unit_price" + i) + "}";
+					if (i != numberOfRecipients - 1)
+						jsonValue += ",";
+				}
+				jsonValue += "],";
+
+
+				jsonValue += "\"transportCosts\":[";
+				var numberOfTransportCosts = numberOfSuppliers * numberOfRecipients;
+				for (var i = 0 ; i < numberOfTransportCosts ; i++) {
+					jsonValue += "{" + getEntry("supplierId", "supplierId" + i) + ',' + getEntry("recipientId", "recipientId" + i) + ',' + getEntry("cost", "cost" + i) + "}";
+					if (i != numberOfTransportCosts - 1)
+						jsonValue += ",";
+				}
+				jsonValue += "]";
+
+
+				jsonValue += "}";
+				return jsonValue;
+			}
+
+			function getEntry(key, keyValue) {
+				return '"' + key + '"' + ":" + '"' + $('#' + keyValue).val() + '"';
+			}
+
+			function ajaxRequest(){
+
+				var request = getValues();
+				console.log(request);
+				request = JSON.parse(request);
+				
+				request = JSON.stringify(request);
+
+
+
+				$.ajax({
+					type: "POST",
+					url: "http://localhost:8080/transport",
+    				data: request,
+    				contentType: "application/json; charset=utf-8",
+    				dataType: "json",
+  				 	success: function(data){console.log(data); myFunction(data)},
+    				error: function(errMsg) {
+    				alert(errMsg);
+    			}});
+			}
+
+
+			document.getElementById("demo").addEventListener("click", ajaxRequest);
+			function myFunction(obj) {
+				
+		}
+
+	</script>
+</body>
+
+</html>
