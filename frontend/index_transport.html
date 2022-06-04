@@ -69,11 +69,18 @@
 	<input type="text" value="supplierId" disabled><input type="text" value="recipientId" disabled><input type="text" value="cost" disabled>
 	<form id="inputy3"></form>
 	</div>
-	<p id="wyniki"></p><br>
-	<p id="wyniki2"></p>
-	<br>
 
-	<div id="cy"></div>
+	<div id="biggus" style="display: none">
+		Transactions:<br>
+		<form id="transactions"></form>
+
+		Unit incomes:<br>
+		<form id="unitIncomes"></form>
+
+		Info:<br>
+		<form id="biggusinfo"></form>
+	</div>
+
 	<script>
 
 		function displaySupplierInputs(i){
@@ -178,9 +185,32 @@
 			}
 
 
+			function displayRow(tableName, suppId, reciId, amount){
+				$('#' + tableName).append("<input disabled type=\"text\" value='" + suppId + "')><input disabled type=\"text\" value='" + reciId + "')><input disabled type=\"text\" value='" + amount + "')><br>");
+			}
+
 			document.getElementById("demo").addEventListener("click", ajaxRequest);
 			function myFunction(obj) {
-				
+				$("#ass").css("display", "none");
+				$("#biggus").css("display", "block");
+				var transactions = obj["transactions"];
+				displayRow("transactions", "supplierId", "recipientId", "amount");
+				for(var id in transactions){ 
+					displayRow("transactions", transactions[id]["supplierId"], transactions[id]["recipientId"], transactions[id]["amount"]);
+				}
+
+				var unitIncomes = obj["unitIncomes"];
+				displayRow("unitIncomes", "supplierId", "recipientId", "unitIncome");
+				for(var id in transactions){ 
+					displayRow("unitIncomes", unitIncomes[id]["supplierId"], unitIncomes[id]["recipientId"], unitIncomes[id]["unitIncome"]);
+				}
+
+				var totalCost = obj["totalCost"];
+				var totalIncome = obj["totalIncome"];
+				var totalProfit = obj["totalProfit"];
+
+				displayRow("biggusinfo", "totalCost", "totalIncome", "totalProfit");
+				displayRow("biggusinfo", totalCost, totalIncome, totalProfit);
 		}
 
 	</script>
