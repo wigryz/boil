@@ -196,13 +196,25 @@
 				var transactions = obj["transactions"];
 				displayRow("transactions", "supplierId", "recipientId", "amount");
 				for(var id in transactions){ 
-					displayRow("transactions", transactions[id]["supplierId"], transactions[id]["recipientId"], transactions[id]["amount"]);
+					var suppId = transactions[id]["supplierId"];
+					var reciId = transactions[id]["recipientId"];
+					if (suppId == 2147483647)
+						suppId = "IMAG"
+					if (reciId == 2147483647)
+						reciId = "IMAG"
+					displayRow("transactions", suppId, reciId, transactions[id]["amount"]);
 				}
 
 				var unitIncomes = obj["unitIncomes"];
 				displayRow("unitIncomes", "supplierId", "recipientId", "unitIncome");
-				for(var id in transactions){ 
-					displayRow("unitIncomes", unitIncomes[id]["supplierId"], unitIncomes[id]["recipientId"], unitIncomes[id]["unitIncome"]);
+				for(var id in unitIncomes){ 
+					var suppId = unitIncomes[id]["supplierId"];
+					var reciId = unitIncomes[id]["recipientId"];
+					if (suppId == 2147483647)
+						suppId = "IMAG"
+					if (reciId == 2147483647)
+						reciId = "IMAG"
+					displayRow("unitIncomes", suppId, reciId, unitIncomes[id]["unitIncome"]);
 				}
 
 				var totalCost = obj["totalCost"];

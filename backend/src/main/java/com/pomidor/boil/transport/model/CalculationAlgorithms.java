@@ -15,7 +15,7 @@ public class CalculationAlgorithms {
         int realRecipientAmount = input.recipients().size();
 
         for (RecipientDto recipient : input.recipients()) {
-            demandAmount += recipient.demand();
+            demandAmount += recipient.supply();
         }
         for (SupplierDto supplier : input.suppliers()) {
             supplyAmount += supplier.supply();
@@ -46,12 +46,12 @@ public class CalculationAlgorithms {
             recipientSupplierTable.add(tempTable);
         }
 
-        //Making two list containing amount of supply and demand for each supplier and recipient
+        //Making two list containing amount of supply and supply for each supplier and recipient
         List<Integer> demandList = new ArrayList<>();
         List<Integer> supplyList = new ArrayList<>();
 
         for (RecipientDto recipient : input.recipients()) {
-            demandList.add(recipient.demand());
+            demandList.add(recipient.supply());
         }
         for (SupplierDto supplier : input.suppliers()) {
             supplyList.add(supplier.supply());
@@ -100,7 +100,7 @@ public class CalculationAlgorithms {
                 break;
             }
         }
-        //If supply doesn't equal demand rest of supply or demand is added to fictional supplier or recipient
+        //If supply doesn't equal supply rest of supply or supply is added to fictional supplier or recipient
         if (!supplyDemandEquality) {
             if (demandEmpty) {
                 for (int i = 0; i < realSupplierAmount; i++) {
